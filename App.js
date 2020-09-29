@@ -29,13 +29,16 @@ import {
 
 const App = () => {
   return (
-    <>
+    <><View style={{flex: 1,backgroundColor: '#eee'}}>
       <View style={styles.image}>
         <Image source={require('./img/logoCardio.png')} />
       </View>
-
+      
       <View style={styles.wrapper}>
-        <Text>Log In</Text>
+      <View style={styles.image2}>
+        <Image source={require('./img/Shape_2_copiasm.png')} />
+      </View>
+        <Text style={styles.login}>Log In</Text>
         <TextInput 
           style={styles.input}
           placeholder="Correo electrónico"
@@ -52,6 +55,7 @@ const App = () => {
           </TouchableHighlight>
         </View>
       </View>
+      </View>
     </>
   );
 };
@@ -59,7 +63,7 @@ const App = () => {
 const styles = StyleSheet.create({
   wrapper: {
     backgroundColor: '#eee',
-    height: '90%',
+    height: '60%',
     display: 'flex',
     justifyContent: 'center',
     paddingHorizontal: 20
@@ -86,8 +90,25 @@ const styles = StyleSheet.create({
   image: {
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#eee',
     marginTop: 50
-  }
+  },
+
+  login: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#eee',
+    fontSize: 30,
+    textAlign: 'center',
+    marginBottom: 20
+  },
+
+  image2: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#eee',
+  },
+
 });
 
 export default App;
