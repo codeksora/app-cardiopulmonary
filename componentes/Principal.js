@@ -1,3 +1,20 @@
+import React, { useState } from 'react';
+
+import {
+    SafeAreaView,
+    StyleSheet,
+    ScrollView,
+    View,
+    Text,
+    TextInput,
+    Image,
+    StatusBar, Button,
+    TouchableHighlight,
+    Dimensions,
+    Alert 
+  } from 'react-native';
+
+
 const Principal = () => {
     return (
       <View style={{ flex: 1, backgroundColor: '#eee' }}>
@@ -8,20 +25,20 @@ const Principal = () => {
   
   
       <View style={styles1.image3}>
-            <Image source={require('./img/profile.png')} />
+            <Image source={require('../img/profile.png')} />
       </View>
   
       <Text style={styles1.nomtec}>Nombre del Técnico</Text>
   
       <View style={styles1.calen}>
-            <Image source={require('./img/calen.png')} />
+            <Image source={require('../img/calen.png')} />
       </View>
   
       <Text style={styles1.VA}>Visualizar Asignaciones</Text>
       <Text style={styles1.VAs}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu ipsum nec libero auctor feugiat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</Text>
   
       <View style={styles1.check}>
-            <Image source={require('./img/check.png')} />
+            <Image source={require('../img/check.png')} />
       </View>
   
       <Text style={styles1.CIT}>Crear Informe Técnico</Text>
@@ -29,7 +46,7 @@ const Principal = () => {
   
   
       <View style={styles1.llave}>
-            <Image source={require('./img/llave.png')} />
+            <Image source={require('../img/llave.png')} />
       </View>
   
       <Text style={styles1.SR}>Solicitar Repuestos</Text>
@@ -37,7 +54,7 @@ const Principal = () => {
   
   
       <View style={styles1.lupa}>
-            <Image source={require('./img/lupa.png')} />
+            <Image source={require('../img/lupa.png')} />
       </View>
   
       <Text style={styles1.BH}>Busqueda de Historial</Text>
@@ -142,4 +159,4 @@ const styles1 = StyleSheet.create({
     },
   });
 
-  export default Principal;
+export default Principal;
