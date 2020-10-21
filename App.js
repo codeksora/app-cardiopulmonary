@@ -33,11 +33,11 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+        <Stack.Screen name="Principal" component={Principal} />
         <Stack.Screen
           name="Login"
           component={ Login }
         />
-        <Stack.Screen name="Principal" component={Principal} />
       </Stack.Navigator>
     </NavigationContainer>
     
