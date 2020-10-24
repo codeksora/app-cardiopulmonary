@@ -18,10 +18,11 @@ import {
 //Firebase
 import auth, { firebase } from "@react-native-firebase/auth";
 import database from '@react-native-firebase/database';
+import storage from '@react-native-firebase/storage';
 
 const Principal = ({ navigation }) => {
     const [name, setName] = useState('')
-    const [image, setImage] = useState('https://i.pinimg.com/originals/fe/93/a8/fe93a86beb623456f12d67a10824a4dd.jpg')
+    const [image, setImage] = useState(null)
 
     const user = firebase.auth().currentUser;
 
@@ -30,12 +31,21 @@ const Principal = ({ navigation }) => {
       .on('value', snapshot => {
         let user = snapshot.val();
         console.log(user);
-        setName(user.name)
-        setImage(user.image)
+		setName(user.name)
+
+		storage().ref(user.image).getDownloadURL().then((url) => {
+			//from url you can fetched the uploaded image easily
+			// this.setState({profileImageUrl: url});
+			// console.log("path de imagen", url);
+			setImage(url)
+		  });
 	  });
+	
+	  
 	  
 	const __goItem = async () => {
-		navigation.navigate('Listado de Asignaciones', { name: 'Jane' })
+		navigation.navigate('Crear Informe', { name: 'Jane' })
+		// navigation.navigate('Listado de Asignaciones', { name: 'Jane' })
 	}
 
     return (
@@ -52,7 +62,7 @@ const Principal = ({ navigation }) => {
     
     
         <View style={styles.imageProfile}>
-          <ImageBackground 
+           <ImageBackground 
             source={{
               uri: image,
             }}

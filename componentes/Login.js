@@ -17,11 +17,21 @@ import {
 import auth, { firebase } from "@react-native-firebase/auth";
 
 const Login = ({ navigation }) => {
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [fetching, setFetching] = useState(false)
-    const [error, setError] = useState('')
-    const [isValid, setValid] = useState(true)
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [fetching, setFetching] = useState(false);
+    const [error, setError] = useState('');
+    const [isValid, setValid] = useState(true);
+
+    // render(){
+      // const user = firebase.auth().currentUser;
+      
+  
+      // if(user) {
+      //   navigation.navigate('Principal', { name: 'Jane' })
+      // }
+
+    // }
 
     const __doSingIn = async () => {
       
