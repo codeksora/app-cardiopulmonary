@@ -24,7 +24,6 @@ import {
   import storage from '@react-native-firebase/storage';
 import auth, { firebase } from "@react-native-firebase/auth";
 import database from '@react-native-firebase/database';
-import { transform } from '@babel/core';
 
 
 const InformeCrear = () => {
