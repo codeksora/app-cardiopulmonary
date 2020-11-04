@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import {
     SafeAreaView,
@@ -20,58 +20,99 @@ import {
 //Firebase
 import auth, { firebase } from "@react-native-firebase/auth";
 import database from '@react-native-firebase/database';
+import firestore from '@react-native-firebase/firestore';
 
 const AsignacionesListado = () => {
+    const user = firebase.auth().currentUser;
+
     const [name, setName] = useState('')
     const [modalVisible, setModalVisible] = useState(false);
     const [image, setImage] = useState('https://i.pinimg.com/originals/fe/93/a8/fe93a86beb623456f12d67a10824a4dd.jpg')
+    const [assignments, setAssignments] = useState([])
+    const [assignmentSelected, setAssignmentSelected] = useState(null)
 
-    const user = firebase.auth().currentUser;
-
-    database()
-      .ref(`/users/${user.uid}`)
-      .on('value', snapshot => {
-        let user = snapshot.val();
-        console.log(user);
-        setName(user.name)
-        setImage(user.image)
-	  });
-	  
-	const __closeModal = async () => {
-        // console.log('Ingresando');
+    const __closeModal = async () => {             
         setModalVisible(!modalVisible);
-        // ToastAndroid.showWithGravityAndOffset(
-        //     "All Your Base Are Belong To Us",
-        //     ToastAndroid.SHORT,
-        //     ToastAndroid.BOTTOM,
-        //     25,
-        //     50
-        //   );
-	}
+    }
+
+    const __openModal =  (key) => {             
+  
+      firestore()
+      .collection('users')
+      .doc(user.uid)
+      .collection('assignments')
+      .doc(key)
+      .get()
+      .then((querySnapshot) => {
+        setAssignmentSelected(querySnapshot.data())
+      })
+
+      // firestore()
+      // .collection('users')
+      // .doc('ABC')
+      // .set({
+      //   name: 'Ada Lovelace',
+      //   age: 30,
+      // })
+      // .then(() => {
+      //   console.log('User added!');
+      // });
+
+      setModalVisible(true);
+    }
+
+    const loadAssigments = async ({user}) => {
+      
+      useEffect(() => {
+        const subscriber = firestore()
+        .collection('users')
+        .doc(user.uid)
+        .collection('assignments')
+        .onSnapshot((querySnapshot) => {
+          const assigmentsList = [];
+
+          querySnapshot.forEach(documentSnapshot => {
+            assigmentsList.push({
+              key: documentSnapshot.id,
+              ...documentSnapshot.data()
+            });
+          });
+
+          setAssignments(assigmentsList)
+        });
+        
+        return () => subscriber();
+      }, [user]);
+    }
+
+    loadAssigments({user});
 
     return (
       <View style={{ flex: 1, backgroundColor: '#eee' }}>
         <ScrollView>
 		<View style={styles.contentItems}>
-			<TouchableHighlight 
-				style={styles.buttonItem}
-				underlayColor='#ddd'
-				onPress={() => {
-                    setModalVisible(true);
-                }}>
 
-					<View style={styles.contentItem}>
-						<View style={styles.contentItemImage}>
-							<Image source={require('../img/calen.png')} />
-						</View>
+                
+      { assignments && assignments.map((item) => 
+        <TouchableHighlight 
+        key = {item.key}
+          style={styles.buttonItem}
+          underlayColor='#ddd'
+          onPress={() => __openModal(item.key)}>
 
-						<View style={styles.contentItemDescription}>
-							<Text style={styles.itemTitle}>Actualización de Equipo del centro médico</Text>
-							<Text style={styles.itemParagraph}>Fecha: 12/12/2020</Text>
-                            <Text style={styles.itemParagraph}>Dirección: Av. 28 de Julio 164</Text>
-						</View>
-					</View>
-			</TouchableHighlight>
+            <View style={styles.contentItem}>
+              <View style={styles.contentItemImage}>
+                <Image source={require('../img/calen.png')} />
+              </View>
+
+              <View style={styles.contentItemDescription}>
+                <Text style={styles.itemTitle}>{ item.title }</Text>
+                <Text style={styles.itemParagraph}>Fecha: { item.date }</Text>
+                              <Text style={styles.itemParagraph}>Dirección: { item.address }</Text>
+              </View>
+            </View>
+        </TouchableHighlight> 
+      )}  
 		</View>
     	</ScrollView>
 
@@ -87,7 +128,7 @@ const AsignacionesListado = () => {
             <View style={styles.modalAlert}>
                 <View style={styles.modalAlertContent}>
                     <Text style={styles.itemTitle}>El equipo 1 está ubicado en</Text>
-                    <Text style={styles.modalAlertDescription}>El modelo del equipo es XXXXX, está en el centro de salud Norte, 3er Piso</Text>
+                    {assignmentSelected && <Text style={styles.modalAlertDescription}>{assignmentSelected.reference}</Text>}
 
                     <View style={styles.modalButtonContent}>
                         <TouchableHighlight 

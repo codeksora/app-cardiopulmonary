@@ -30,7 +30,7 @@ const Principal = ({ navigation }) => {
       .ref(`/users/${user.uid}`)
       .on('value', snapshot => {
         let user = snapshot.val();
-        console.log(user);
+        // console.log(user);
 		setName(user.name)
 
 		storage().ref(user.image).getDownloadURL().then((url) => {
@@ -43,9 +43,12 @@ const Principal = ({ navigation }) => {
 	
 	  
 	  
-	const __goItem = async () => {
+	const __goItem1 = async () => {
+		navigation.navigate('Listado de Asignaciones', { name: 'Jane' })
+	}
+	
+	const __goItem2 = async () => {
 		navigation.navigate('Crear Informe', { name: 'Jane' })
-		// navigation.navigate('Listado de Asignaciones', { name: 'Jane' })
 	}
 
     return (
@@ -80,7 +83,7 @@ const Principal = ({ navigation }) => {
 			<TouchableHighlight 
 				style={styles.buttonItem}
 				underlayColor='#ddd'
-				onPress={__goItem}>
+				onPress={__goItem1}>
 
 					<View style={styles.contentItem}>
 						<View style={styles.contentItemImage}>
@@ -97,7 +100,7 @@ const Principal = ({ navigation }) => {
 			<TouchableHighlight 
 				style={styles.buttonItem}
 				underlayColor='#ddd'
-				onPress={__goItem}>
+				onPress={__goItem2}>
 
 					<View style={styles.contentItem}>
 						<View style={styles.contentItemImage}>
@@ -114,7 +117,7 @@ const Principal = ({ navigation }) => {
 			<TouchableHighlight 
 				style={styles.buttonItem}
 				underlayColor='#ddd'
-				onPress={__goItem}>
+				onPress={__goItem1}>
 
 					<View style={styles.contentItem}>
 						<View style={styles.contentItemImage}>
@@ -131,7 +134,7 @@ const Principal = ({ navigation }) => {
 			<TouchableHighlight 
 				style={styles.buttonItem}
 				underlayColor='#ddd'
-				onPress={__goItem}>
+				onPress={__goItem1}>
 
 					<View style={styles.contentItem}>
 						<View style={styles.contentItemImage}>
