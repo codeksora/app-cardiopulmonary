@@ -114,7 +114,7 @@ const PrincipalIngeniero = ({ navigation }) => {
 			<TouchableHighlight 
 				style={styles.buttonItem}
 				underlayColor='#ddd'
-				onPress={() => __goItem('Solicitud Repuesto')}>
+				onPress={() => __goItem('Ver Solicitud de Repuesto')}>
 
 					<View style={styles.contentItem}>
 						<View style={styles.contentItemImage}>
