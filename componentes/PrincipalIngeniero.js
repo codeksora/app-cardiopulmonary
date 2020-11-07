@@ -80,7 +80,7 @@ const PrincipalIngeniero = ({ navigation }) => {
 			<TouchableHighlight 
 				style={styles.buttonItem}
 				underlayColor='#ddd'
-				onPress={() => __goItem('Listado de Asignaciones')}>
+				onPress={() => __goItem('Agregar Asignaciones')}>
 
 					<View style={styles.contentItem}>
 						<View style={styles.contentItemImage}>

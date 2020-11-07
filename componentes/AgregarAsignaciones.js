@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import {
     SafeAreaView,
@@ -26,6 +26,8 @@ import auth, { firebase } from "@react-native-firebase/auth";
 import database from '@react-native-firebase/database';
 import firestore from '@react-native-firebase/firestore';
 
+import {Picker} from '@react-native-picker/picker';
+
 
 const AgregarAsignaciones = ({ navigation }) => {
     const [name, setName] = useState('')
@@ -39,6 +41,14 @@ const AgregarAsignaciones = ({ navigation }) => {
     const [datoCliente, setDatoCliente] = useState('')
     const [problemaCliente, setProblemaCliente] = useState('')
 
+    const [tecnico, setTecnico] = useState('')
+    const [tecnicosList, setTecnicosList] = useState([])
+    const [products, setProducts] = useState('')
+    const [productsList, setProductsList] = useState([])
+    const [medicalCenters, setMedicalCenters] = useState('')
+    const [medicalCentersList, setMedicalCentersList] = useState([])
+
+
     const user = firebase.auth().currentUser;
       
       const options = {
@@ -50,27 +60,65 @@ const AgregarAsignaciones = ({ navigation }) => {
         },
       };
 
-      
-	  
-	const __uploadImage = async () => {       
-        
-        ImagePicker.showImagePicker(options, (response) => {          
-            if (response.didCancel) {
-              console.log('User cancelled image picker');
-            } else if (response.error) {
-              console.log('ImagePicker Error: ', response.error);
-            } else if (response.customButton) {
-              console.log('User tapped custom button: ', response.customButton);
-            } else {          
-              // You can also display the image using data:
-              const source = { uri: 'data:image/jpeg;base64,' + response.data };
+    const loadData = () => {
+        useEffect(() => {
+            firestore()
+                .collection('users')
+                .where('role', '==', 'TECH')
+                .get()
+                .then((querySnapshot) => {
+                    const tecnicosArr = [];
 
-              setUpload(source);
-              setDataUpload(response)
-              ;
-            }
-          });
+                    querySnapshot.forEach(documentSnapshot => {
+                        tecnicosArr.push({
+                            key: documentSnapshot.id,
+                            ...documentSnapshot.data()
+                        })
+                    });
+                    setTecnicosList(tecnicosArr)
+                });
+            
+        }, [user]);
+
+        useEffect(() => {
+            firestore()
+                .collection('products')
+                .get()
+                .then((querySnapshot) => {
+                    const productsArr = [];
+
+                    querySnapshot.forEach(documentSnapshot => {
+                        productsArr.push({
+                            key: documentSnapshot.id,
+                            ...documentSnapshot.data()
+                        })
+                    });
+                    setProductsList(productsArr)
+                });
+            
+        }, [user]);
+
+        useEffect(() => {
+            firestore()
+                .collection('medical_centers')
+                .get()
+                .then((querySnapshot) => {
+                    const medicalCentersArr = [];
+
+                    querySnapshot.forEach(documentSnapshot => {
+                        medicalCentersArr.push({
+                            key: documentSnapshot.id,
+                            ...documentSnapshot.data()
+                        })
+                    });
+                    setMedicalCentersList(medicalCentersArr)
+                });
+            
+        }, [user]);
     }
+
+    loadData();
+      
     
     const __addInforme = async () => {
       const response = dataUpload
@@ -121,29 +169,50 @@ const AgregarAsignaciones = ({ navigation }) => {
           <View style={styles.contentForm}>
             <View>
               <Text style={styles.label}>Técnicos:</Text>
-                <TextInput 
-                    style={styles.input}
-                    onChangeText={(texto) => setCodigoEquipo(texto)}
-                    value={codigoEquipo}
-                />
+              {tecnicosList && 
+                <Picker
+                    selectedValue={tecnico}
+                    style={styles.select}
+                    onValueChange={(itemValue, itemIndex) =>
+                        setTecnico(itemValue)
+                    }>
+                    <Picker.Item label="Seleccione" value="" />
+                    {tecnicosList.map((item) => <Picker.Item key = {item.key} label={item.name} value={item.key} /> )}
+                    
+                </Picker>
+                }
             </View>
 
             <View>
               <Text style={styles.label}>Centros de Salud:</Text>
-                <TextInput 
-                    style={styles.input}
-                    onChangeText={(texto) => setCodigoEquipo(texto)}
-                    value={codigoEquipo}
-                />
+              {medicalCentersList && 
+                <Picker
+                    selectedValue={medicalCenters}
+                    style={styles.select}
+                    onValueChange={(itemValue, itemIndex) =>
+                        setMedicalCenters(itemValue)
+                    }>
+                    <Picker.Item label="Seleccione" value="" />
+                    {medicalCentersList.map((item) => <Picker.Item key = {item.key} label={item.name} value={item.key} /> )}
+                    
+                </Picker>
+                }
             </View>
 
             <View>
               <Text style={styles.label}>Tipo de Equipo:</Text>
-                <TextInput 
-                    style={styles.input}
-                    onChangeText={(texto) => setCodigoEquipo(texto)}
-                    value={codigoEquipo}
-                />
+              {productsList && 
+                <Picker
+                    selectedValue={products}
+                    style={styles.select}
+                    onValueChange={(itemValue, itemIndex) =>
+                        setProducts(itemValue)
+                    }>
+                    <Picker.Item label="Seleccione" value="" />
+                    {productsList.map((item) => <Picker.Item key = {item.key} label={item.name} value={item.key} /> )}
+                    
+                </Picker>
+                }
             </View>
 
             <View>
@@ -153,19 +222,6 @@ const AgregarAsignaciones = ({ navigation }) => {
                     onChangeText={(texto) => setCodigoEquipo(texto)}
                     value={codigoEquipo}
                 />
-            </View>
-
-             <View>
-            <Image source={upload} style={{width: '100%', height: 140, marginBottom: 10}}/>
-            </View>
-            
-
-            <View>
-            <TouchableHighlight 
-              style={styles.buttonUpload}
-              onPress={__uploadImage}>
-              <Text style={styles.buttonUploadText}>Cargar Imagen</Text>
-              </TouchableHighlight>
             </View>
 
             <View>
@@ -191,6 +247,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
     marginBottom: 5
+  },
+  select: {
+    width: '100%',
+    height: 50
   },
   input: {
     backgroundColor: '#eee',
