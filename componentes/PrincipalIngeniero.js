@@ -22,9 +22,9 @@ import storage from '@react-native-firebase/storage';
 
 import firestore from '@react-native-firebase/firestore';
 
-const Principal = ({ navigation }) => {
+const PrincipalIngeniero = ({ navigation }) => {
     const [name, setName] = useState('')
-    const [image, setImage] = useState('https://i.pinimg.com/originals/fe/93/a8/fe93a86beb623456f12d67a10824a4dd.jpg')
+    const [image, setImage] = useState(null)
 
     const user = firebase.auth().currentUser;
 
@@ -36,14 +36,11 @@ const Principal = ({ navigation }) => {
         .then((querySnapshot) => {
             const userData = querySnapshot.data();
 
-			setName(userData.name)
-			
-			if(userData.image) {
-				storage().ref(userData.image).getDownloadURL().then((url) => {
-					setImage(url)
-				  });
-			}
+            setName(userData.name)
 
+            storage().ref(userData.image).getDownloadURL().then((url) => {
+                setImage(url)
+              });
 
         })
 	
@@ -91,7 +88,7 @@ const Principal = ({ navigation }) => {
 						</View>
 
 						<View style={styles.contentItemDescription}>
-							<Text style={styles.itemTitle}>Visualizar Asignaciones</Text>
+							<Text style={styles.itemTitle}>Agregar Asignaciones</Text>
 							<Text style={styles.itemParagraph}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu ipsum nec libero auctor feugiat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</Text>
 						</View>
 					</View>
@@ -100,7 +97,7 @@ const Principal = ({ navigation }) => {
 			<TouchableHighlight 
 				style={styles.buttonItem}
 				underlayColor='#ddd'
-				onPress={() => __goItem('Crear Informe')}>
+				onPress={() => __goItem('Ver Informes')}>
 
 					<View style={styles.contentItem}>
 						<View style={styles.contentItemImage}>
@@ -108,7 +105,7 @@ const Principal = ({ navigation }) => {
 						</View>
 
 						<View style={styles.contentItemDescription}>
-							<Text style={styles.itemTitle}>Crear Informe Técnico</Text>
+							<Text style={styles.itemTitle}>Ver Informes</Text>
 							<Text style={styles.itemParagraph}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu ipsum nec libero auctor feugiat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</Text>
 						</View>
 					</View>
@@ -125,7 +122,7 @@ const Principal = ({ navigation }) => {
 						</View>
 
 						<View style={styles.contentItemDescription}>
-							<Text style={styles.itemTitle}>Solicitar Repuestos</Text>
+							<Text style={styles.itemTitle}>Ver Solicitud de Repuesto</Text>
 							<Text style={styles.itemParagraph}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu ipsum nec libero auctor feugiat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</Text>
 						</View>
 					</View>
@@ -134,15 +131,15 @@ const Principal = ({ navigation }) => {
 			<TouchableHighlight 
 				style={styles.buttonItem}
 				underlayColor='#ddd'
-				onPress={() => __goItem('Historial de Equipo')}>
+				onPress={() => __goItem('Historial del Equipo')}>
 
 					<View style={styles.contentItem}>
 						<View style={styles.contentItemImage}>
-							<Image source={require('../img/lupa.png')} />
+							<Image source={require('../img/playlist_add-24px.png')} style={{height: 69, width: 69}} />
 						</View>
 
 						<View style={styles.contentItemDescription}>
-							<Text style={styles.itemTitle}>Busqueda de Historial</Text>
+							<Text style={styles.itemTitle}>Registrar Técnicos</Text>
 							<Text style={styles.itemParagraph}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu ipsum nec libero auctor feugiat. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</Text>
 						</View>
 					</View>
@@ -203,4 +200,4 @@ const styles = StyleSheet.create({
 	}
   });
 
-export default Principal;
+export default PrincipalIngeniero;

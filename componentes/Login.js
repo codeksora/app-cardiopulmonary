@@ -11,10 +11,13 @@ import {
     StatusBar, Button,
     TouchableHighlight,
     Dimensions,
-    Alert 
+    Alert,
+    ToastAndroid
   } from 'react-native';
   
 import auth, { firebase } from "@react-native-firebase/auth";
+
+import firestore from '@react-native-firebase/firestore';
 
 const Login = ({ navigation }) => {
     const [email, setEmail] = useState('');
@@ -38,11 +41,36 @@ const Login = ({ navigation }) => {
         try {
             let response = await auth().signInWithEmailAndPassword(email, password)
             if (response && response.user) {
-                navigation.navigate('Principal', { name: 'Jane' })
+              const uid = response.user.uid;
+
+              firestore()
+                .collection('users')
+                .doc(uid)
+                .get()
+                .then((querySnapshot) => {
+                  const userData = querySnapshot.data();
+
+                  if(userData.role == 'TECH') {
+                    navigation.navigate('Principal', { name: 'Jane' })
+                  } else if(userData.role == 'INGE') {
+                    navigation.navigate('Principal Ingeniero', { name: 'Jane' })
+                  }
+
+                })
+
                 Alert.alert("Bienvenido ✅", "Logeado correctamente")
             }
         } catch (e) {
-            console.error(e.message)
+            if(e.code == 'auth/user-not-found' || e-code == 'auth/wrong-password') {
+              ToastAndroid.showWithGravityAndOffset(
+                    "Usuario y/o contraseña incorrectos",
+                    ToastAndroid.SHORT,
+                    ToastAndroid.BOTTOM,
+                    25,
+                    50
+                  );
+            }
+            console.log(e.message)
         }
     }
 

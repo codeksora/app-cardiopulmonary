@@ -27,7 +27,7 @@ import database from '@react-native-firebase/database';
 import firestore from '@react-native-firebase/firestore';
 
 
-const InformeCrear = ({ navigation }) => {
+const AgregarAsignaciones = ({ navigation }) => {
     const [name, setName] = useState('')
     const [modalVisible, setModalVisible] = useState(false);
     const [image, setImage] = useState('https://i.pinimg.com/originals/fe/93/a8/fe93a86beb623456f12d67a10824a4dd.jpg')
@@ -120,7 +120,7 @@ const InformeCrear = ({ navigation }) => {
         <ScrollView>
           <View style={styles.contentForm}>
             <View>
-              <Text style={styles.label}>Código del Equipo:</Text>
+              <Text style={styles.label}>Técnicos:</Text>
                 <TextInput 
                     style={styles.input}
                     onChangeText={(texto) => setCodigoEquipo(texto)}
@@ -129,22 +129,29 @@ const InformeCrear = ({ navigation }) => {
             </View>
 
             <View>
-                <Text style={styles.label}>Datos del cliente:</Text>
+              <Text style={styles.label}>Centros de Salud:</Text>
                 <TextInput 
-                    multiline
-                    style={styles.textarea}
-                    onChangeText={(texto) => setDatoCliente(texto)}
-                    value={datoCliente}
+                    style={styles.input}
+                    onChangeText={(texto) => setCodigoEquipo(texto)}
+                    value={codigoEquipo}
                 />
             </View>
 
             <View>
-                <Text style={styles.label}>Problema que refiere el cliente:</Text>
+              <Text style={styles.label}>Tipo de Equipo:</Text>
                 <TextInput 
-                    multiline
-                    style={styles.textarea}
-                    onChangeText={(texto) => setProblemaCliente(texto)}
-                    value={problemaCliente}
+                    style={styles.input}
+                    onChangeText={(texto) => setCodigoEquipo(texto)}
+                    value={codigoEquipo}
+                />
+            </View>
+
+            <View>
+              <Text style={styles.label}>Seleccione Fecha y Hora:</Text>
+                <TextInput 
+                    style={styles.input}
+                    onChangeText={(texto) => setCodigoEquipo(texto)}
+                    value={codigoEquipo}
                 />
             </View>
 
@@ -271,4 +278,4 @@ const styles = StyleSheet.create({
     }
   });
 
-export default InformeCrear;
+export default AgregarAsignaciones;

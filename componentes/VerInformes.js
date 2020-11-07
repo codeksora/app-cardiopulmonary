@@ -21,68 +21,42 @@ import {
 import auth, { firebase } from "@react-native-firebase/auth";
 import database from '@react-native-firebase/database';
 import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
 
-const AsignacionesListado = ({ navigation }) => {
+const VerInformes = ({ navigation }) => {
     const user = firebase.auth().currentUser;
 
     const [name, setName] = useState('')
     const [modalVisible, setModalVisible] = useState(false);
     const [image, setImage] = useState('https://i.pinimg.com/originals/fe/93/a8/fe93a86beb623456f12d67a10824a4dd.jpg')
-    const [assignments, setAssignments] = useState([])
+    const [reports, setReports] = useState([])
     const [assignmentSelected, setAssignmentSelected] = useState(null)
 
-    const __closeModal = async () => {             
-        setModalVisible(!modalVisible);
-    }
-
-    const __openModal =  (key) => {             
-  
-      firestore()
-      .collection('users')
-      .doc(user.uid)
-      .collection('assignments')
-      .doc(key)
-      .get()
-      .then((querySnapshot) => {
-        setAssignmentSelected(querySnapshot.data())
-      })
-
-      setModalVisible(true);
-    }
-
-    const loadAssigments = async ({user}) => {
+    const loadReports = async ({user}) => {
       
       useEffect(() => {
         const subscriber = firestore()
-        .collection('assignments')
-        .where('user_id', '==', user.uid)
+        .collection('reports')
         .onSnapshot((querySnapshot) => {
-          const assigmentsList = [];
+          const reportsList = [];
 
           querySnapshot.forEach(documentSnapshot => {
-            assigmentsList.push({
-              key: documentSnapshot.id,
-              ...documentSnapshot.data()
-            });
+                reportsList.push({
+                    key: documentSnapshot.id,
+                    ...documentSnapshot.data()
+                });
+    
           });
 
-          setAssignments(assigmentsList)
+          setReports(reportsList)  
+          
         });
-
-        // firestore()
-        // .collection('informes')
-        // .where('user_id', '==', user.uid)
-        // .onSnapshot((querySnapshot) => {
-        //   querySnapshot.forEach(documentSnapshot => {
-        //     console.log(documentSnapshot.data());
-        //   })
-        // });
         
         return () => subscriber();
       }, [user]);
     }
 
-    loadAssigments({user});
+    loadReports({user});
 
     return (
       <View style={{ flex: 1, backgroundColor: '#eee' }}>
@@ -90,56 +64,31 @@ const AsignacionesListado = ({ navigation }) => {
 		<View style={styles.contentItems}>
 
                 
-      { assignments && assignments.map((item) => 
+      { reports && reports.map((item) => 
         <TouchableHighlight 
         key = {item.key}
           style={styles.buttonItem}
-          underlayColor='#ddd'
-          onPress={() => __openModal(item.key)}>
+          underlayColor='#ddd'>
 
             <View style={styles.contentItem}>
               <View style={styles.contentItemImage}>
-                <Image source={require('../img/calen.png')} />
+                  {item.image_url && 
+                    <Image source={{
+                        uri: item.image_url
+                    }} style={{width: 50, height: 50}}/>
+                }
               </View>
 
               <View style={styles.contentItemDescription}>
-                <Text style={styles.itemTitle}>{ item.title }</Text>
-                <Text style={styles.itemParagraph}>Fecha: { item.date }</Text>
-                <Text style={styles.itemParagraph}>Dirección: { item.address }</Text>
+                <Text style={styles.itemTitle}>Código: { item.codigo_equipo }</Text>
+                <Text style={styles.itemParagraph}>Datos del cliente: { item.dato_cliente }</Text>
+                <Text style={styles.itemParagraph}>Problema del cliente: { item.problema_cliente }</Text>
               </View>
             </View>
         </TouchableHighlight> 
       )}  
 		</View>
     	</ScrollView>
-
-        <Modal
-            animationType="fade"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
-            }}
-        >
-
-            <View style={styles.modalAlert}>
-                <View style={styles.modalAlertContent}>
-                    <Text style={styles.itemTitle}>El equipo 1 está ubicado en</Text>
-                    {assignmentSelected && <Text style={styles.modalAlertDescription}>{assignmentSelected.reference}</Text>}
-
-                    <View style={styles.modalButtonContent}>
-                        <TouchableHighlight 
-                        style={styles.modalButton}
-                        underlayColor='#ddd'
-                        onPress={__closeModal}>
-
-                                <Text style={styles.modalButtonText}>OK</Text>
-                        </TouchableHighlight>
-
-                    </View>
-                </View>
-            </View>
-        </Modal>
       </View>
     );
   }
@@ -211,4 +160,4 @@ const styles = StyleSheet.create({
     }
   });
 
-export default AsignacionesListado;
+export default VerInformes;

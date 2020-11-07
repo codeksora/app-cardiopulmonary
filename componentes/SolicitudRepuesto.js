@@ -27,7 +27,7 @@ import database from '@react-native-firebase/database';
 import firestore from '@react-native-firebase/firestore';
 
 
-const InformeCrear = ({ navigation }) => {
+const SolicitudRepuesto = ({ navigation }) => {
     const [name, setName] = useState('')
     const [modalVisible, setModalVisible] = useState(false);
     const [image, setImage] = useState('https://i.pinimg.com/originals/fe/93/a8/fe93a86beb623456f12d67a10824a4dd.jpg')
@@ -36,81 +36,30 @@ const InformeCrear = ({ navigation }) => {
     });
     const [dataUpload, setDataUpload] = useState('');
     const [codigoEquipo, setCodigoEquipo] = useState('')
-    const [datoCliente, setDatoCliente] = useState('')
-    const [problemaCliente, setProblemaCliente] = useState('')
+    const [codigoCliente, setCodigoCliente] = useState('')
+    const [tipoRepuesto, setTipoRepuesto] = useState('')
 
     const user = firebase.auth().currentUser;
-      
-      const options = {
-        title: 'Carga una imagen',
-        customButtons: [{ name: 'fb', title: 'Choose Photo from Facebook' }],
-        storageOptions: {
-          skipBackup: true,
-          path: 'images',
-        },
-      };
+ 
 
-      
-	  
-	const __uploadImage = async () => {       
-        
-        ImagePicker.showImagePicker(options, (response) => {          
-            if (response.didCancel) {
-              console.log('User cancelled image picker');
-            } else if (response.error) {
-              console.log('ImagePicker Error: ', response.error);
-            } else if (response.customButton) {
-              console.log('User tapped custom button: ', response.customButton);
-            } else {          
-              // You can also display the image using data:
-              const source = { uri: 'data:image/jpeg;base64,' + response.data };
-
-              setUpload(source);
-              setDataUpload(response)
-              ;
-            }
-          });
-    }
-    
-    const __addInforme = async () => {
-      const response = dataUpload
-
-      const nameImage = Date.now() + '-' + response.fileName;
-
-      const reference = storage().ref(nameImage);
-      // uploads file
-      const task = reference.putFile(response.path);
-
-      task.then((resp) => {
-        // console.log('Image uploaded to the bucket!', resp.metadata.name);
-
-        storage().ref(resp.metadata.name).getDownloadURL().then((url) => {
-            firestore()
-            .collection('reports')
+    const __requestReport = async () => {
+        firestore()
+            .collection('requests')
             .add({
-              imagen: nameImage,
-              image_url: url,
-              codigo_equipo: codigoEquipo,
-              dato_liente: datoCliente,
-              problema_cliente: problemaCliente,
-              user_id: user.uid
+            codigo_equipo: codigoEquipo,
+            codigo_liente: codigoCliente,
+            tipo_repuesto: tipoRepuesto,
+            user_id: user.uid
             })
             .then(() => {
-              setDataUpload('')
-              setCodigoEquipo('')
-              setDatoCliente('')
-              setProblemaCliente('')
-              setUpload({
-                uri: 'https://i.pinimg.com/originals/fe/93/a8/fe93a86beb623456f12d67a10824a4dd.jpg'
-              })
-    
-              Alert.alert("✅", "Informe añadido correctamente")
-    
-              navigation.navigate('Principal', { name: 'Jane' })
+                setCodigoEquipo('')
+                setCodigoCliente('')
+                setTipoRepuesto('')
+
+                Alert.alert("✅", "Solicitud enviada correctamente")
+
+                navigation.navigate('Principal', { name: 'Jane' })
             });
-        });
-        
-      })
     }
 
       
@@ -129,43 +78,29 @@ const InformeCrear = ({ navigation }) => {
             </View>
 
             <View>
-                <Text style={styles.label}>Datos del cliente:</Text>
+                <Text style={styles.label}>Código del cliente:</Text>
                 <TextInput 
-                    multiline
-                    style={styles.textarea}
-                    onChangeText={(texto) => setDatoCliente(texto)}
-                    value={datoCliente}
+                    style={styles.input}
+                    onChangeText={(texto) => setCodigoCliente(texto)}
+                    value={codigoCliente}
                 />
             </View>
 
             <View>
-                <Text style={styles.label}>Problema que refiere el cliente:</Text>
+                <Text style={styles.label}>Tipo de repuesto:</Text>
                 <TextInput 
                     multiline
                     style={styles.textarea}
-                    onChangeText={(texto) => setProblemaCliente(texto)}
-                    value={problemaCliente}
+                    onChangeText={(texto) => setTipoRepuesto(texto)}
+                    value={tipoRepuesto}
                 />
-            </View>
-
-             <View>
-            <Image source={upload} style={{width: '100%', height: 140, marginBottom: 10}}/>
-            </View>
-            
-
-            <View>
-            <TouchableHighlight 
-              style={styles.buttonUpload}
-              onPress={__uploadImage}>
-              <Text style={styles.buttonUploadText}>Cargar Imagen</Text>
-              </TouchableHighlight>
             </View>
 
             <View>
             <TouchableHighlight 
               style={styles.buttonUpload}
-              onPress={__addInforme}>
-              <Text style={styles.buttonUploadText}>Enviar Informe</Text>
+              onPress={__requestReport}>
+              <Text style={styles.buttonUploadText}>Enviar</Text>
               </TouchableHighlight>
             </View>
 
@@ -271,4 +206,4 @@ const styles = StyleSheet.create({
     }
   });
 
-export default InformeCrear;
+export default SolicitudRepuesto;
