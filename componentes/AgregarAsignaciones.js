@@ -27,6 +27,8 @@ import database from '@react-native-firebase/database';
 import firestore from '@react-native-firebase/firestore';
 
 import {Picker} from '@react-native-picker/picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 
 const AgregarAsignaciones = ({ navigation }) => {
@@ -48,6 +50,15 @@ const AgregarAsignaciones = ({ navigation }) => {
     const [medicalCenters, setMedicalCenters] = useState('')
     const [medicalCentersList, setMedicalCentersList] = useState([])
 
+    const [titulo, setTitulo] = useState('')
+    const [direccion, setDireccion] = useState('')
+    const [referencia, setReferencia] = useState('')
+
+    const [fecha, setFecha] = useState('')
+    const [hora, setHora] = useState('')
+    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+    const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
+
 
     const user = firebase.auth().currentUser;
       
@@ -59,6 +70,36 @@ const AgregarAsignaciones = ({ navigation }) => {
           path: 'images',
         },
       };
+
+    const showTimePicker = () => {
+        setTimePickerVisibility(true);
+    };
+
+    const hideTimePicker = () => {
+        setTimePickerVisibility(false);
+    };
+
+    const showDatePicker = () => {
+        setDatePickerVisibility(true);
+    };
+
+    const hideDatePicker = () => {
+        setDatePickerVisibility(false);
+    };
+
+    const confirmarFecha = (date) => {
+        const opciones = { year: 'numeric', month: 'long', day: '2-digit' }
+        setFecha(date.toLocaleDateString('es-ES', opciones));
+        console.log("A date has been picked: ", date);
+        hideDatePicker();
+      };
+
+      const confirmarHora = (time) => {
+        const opciones = { hour: 'numeric', minute: '2-digit' }
+        setHora(time.toLocaleString('en-US', opciones));
+        console.log("A time has been picked: ", time);
+        hideTimePicker();
+    };
 
     const loadData = () => {
         useEffect(() => {
@@ -120,45 +161,25 @@ const AgregarAsignaciones = ({ navigation }) => {
     loadData();
       
     
-    const __addInforme = async () => {
-      const response = dataUpload
+    const __addAsignacion = async () => {
+        firestore()
+        .collection('assignments')
+        .add({
+            address: direccion,
+            date: fecha,
+            time: hora,
+            reference: referencia,
+            medical_center_id: medicalCenters,
+            product_id: products,
+            title: titulo,
+            user_id: tecnico
+        })
+        .then(() => {
 
-      const nameImage = Date.now() + '-' + response.fileName;
+          Alert.alert("✅", "Técnico Asignado correctamente")
 
-      const reference = storage().ref(nameImage);
-      // uploads file
-      const task = reference.putFile(response.path);
-
-      task.then((resp) => {
-        // console.log('Image uploaded to the bucket!', resp.metadata.name);
-
-        storage().ref(resp.metadata.name).getDownloadURL().then((url) => {
-            firestore()
-            .collection('reports')
-            .add({
-              imagen: nameImage,
-              image_url: url,
-              codigo_equipo: codigoEquipo,
-              dato_liente: datoCliente,
-              problema_cliente: problemaCliente,
-              user_id: user.uid
-            })
-            .then(() => {
-              setDataUpload('')
-              setCodigoEquipo('')
-              setDatoCliente('')
-              setProblemaCliente('')
-              setUpload({
-                uri: 'https://i.pinimg.com/originals/fe/93/a8/fe93a86beb623456f12d67a10824a4dd.jpg'
-              })
-    
-              Alert.alert("✅", "Informe añadido correctamente")
-    
-              navigation.navigate('Principal', { name: 'Jane' })
-            });
+          navigation.navigate('Principal Ingeniero', { name: 'Jane' })
         });
-        
-      })
     }
 
       
@@ -167,6 +188,33 @@ const AgregarAsignaciones = ({ navigation }) => {
       <View style={{ flex: 1, backgroundColor: '#fff' }}>
         <ScrollView>
           <View style={styles.contentForm}>
+              <View>
+                <Text style={styles.label}>Título:</Text>
+                <TextInput 
+                    style={styles.input}
+                    onChangeText={(texto) => setTitulo(texto)}
+                    value={titulo}
+                />
+            </View>
+
+            <View>
+                <Text style={styles.label}>Dirección:</Text>
+                <TextInput 
+                    style={styles.input}
+                    onChangeText={(texto) => setDireccion(texto)}
+                    value={direccion}
+                />
+            </View>
+
+            <View>
+                <Text style={styles.label}>Referencia:</Text>
+                <TextInput 
+                    style={styles.input}
+                    onChangeText={(texto) => setReferencia(texto)}
+                    value={referencia}
+                />
+            </View>
+
             <View>
               <Text style={styles.label}>Técnicos:</Text>
               {tecnicosList && 
@@ -216,21 +264,49 @@ const AgregarAsignaciones = ({ navigation }) => {
             </View>
 
             <View>
-              <Text style={styles.label}>Seleccione Fecha y Hora:</Text>
-                <TextInput 
-                    style={styles.input}
-                    onChangeText={(texto) => setCodigoEquipo(texto)}
-                    value={codigoEquipo}
+              <TouchableHighlight 
+              style={styles.buttonUpload}
+              onPress={showDatePicker}>
+              <Text style={styles.buttonUploadText}>Seleccione Fecha</Text>
+              </TouchableHighlight>
+              <DateTimePickerModal
+                    isVisible={isDatePickerVisible}
+                    mode="date"
+                    onConfirm={confirmarFecha}
+                    onCancel={hideDatePicker}
+                    locale='es_ES'
+                    headerTextIOS="Elige la Fecha"
+                    cancelTextIOS="Cancelar"
+                    confirmTextIOS="Confirmar"
                 />
             </View>
 
             <View>
-            <TouchableHighlight 
+              <TouchableHighlight 
               style={styles.buttonUpload}
-              onPress={__addInforme}>
-              <Text style={styles.buttonUploadText}>Enviar Informe</Text>
+              onPress={showTimePicker}>
+              <Text style={styles.buttonUploadText}>Seleccione Hora</Text>
               </TouchableHighlight>
+              <DateTimePickerModal
+                    isVisible={isTimePickerVisible}
+                    mode="time"
+                    onConfirm={confirmarHora}
+                    onCancel={hideTimePicker}
+                    locale='es_ES'
+                    headerTextIOS="Elige una Hora"
+                    cancelTextIOS="Cancelar"
+                    confirmTextIOS="Confirmar"
+                />
             </View>
+
+            <View>
+                <TouchableHighlight 
+                style={styles.buttonUpload}
+                onPress={__addAsignacion}>
+                <Text style={styles.buttonUploadText}>Registrar</Text>
+                </TouchableHighlight>
+            </View>
+
 
           </View>
     	</ScrollView>

@@ -20,9 +20,9 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {/* <Stack.Screen name="Login" options={{headerShown: false}} component={ Login } />
+        <Stack.Screen name="Login" options={{headerShown: false}} component={ Login } />
 
-        <Stack.Screen name="Principal" component={Principal} /> */}
+        <Stack.Screen name="Principal" component={Principal} />
         <Stack.Screen name="Principal Ingeniero" component={PrincipalIngeniero} />
 
         <Stack.Screen name="Listado de Asignaciones" component={AsignacionesListado} />

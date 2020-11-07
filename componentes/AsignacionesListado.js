@@ -36,10 +36,9 @@ const AsignacionesListado = ({ navigation }) => {
     }
 
     const __openModal =  (key) => {             
-  
+      console.log(key);
+
       firestore()
-      .collection('users')
-      .doc(user.uid)
       .collection('assignments')
       .doc(key)
       .get()
@@ -124,7 +123,7 @@ const AsignacionesListado = ({ navigation }) => {
 
             <View style={styles.modalAlert}>
                 <View style={styles.modalAlertContent}>
-                    <Text style={styles.itemTitle}>El equipo 1 está ubicado en</Text>
+                    <Text style={styles.itemTitle}>Referencia</Text>
                     {assignmentSelected && <Text style={styles.modalAlertDescription}>{assignmentSelected.reference}</Text>}
 
                     <View style={styles.modalButtonContent}>

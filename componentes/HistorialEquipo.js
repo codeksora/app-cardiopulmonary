@@ -108,7 +108,7 @@ const HistorialEquipo = ({ navigation }) => {
 
                     <View style={styles.contentItemDescription}>
                         <Text style={styles.itemTitle}>Código: { item.codigo_equipo }</Text>
-                        <Text style={styles.itemParagraph}>Datos del cliente: { item.dato_cliente }</Text>
+                        <Text style={styles.itemParagraph}>Datos del cliente: { item.dato_liente }</Text>
                         <Text style={styles.itemParagraph}>Problema del cliente: { item.problema_cliente }</Text>
                     </View>
                     </View>
