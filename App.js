@@ -14,6 +14,7 @@ import VerInformes from './componentes/VerInformes';
 import HistorialEquipo from './componentes/HistorialEquipo';
 import AgregarAsignaciones from './componentes/AgregarAsignaciones';
 import SolicitudRepuestoListado from './componentes/SolicitudRepuestoListado';
+import RegistrarTecnico from './componentes/RegistrarTecnico';
 
 const Stack = createStackNavigator();
 
@@ -23,11 +24,12 @@ const App = () => {
       <Stack.Navigator>
         <Stack.Screen name="Login" options={{headerShown: false}} component={ Login } />
 
-        <Stack.Screen name="Principal" component={Principal} />
-        <Stack.Screen name="Principal Ingeniero" component={PrincipalIngeniero} />
+        <Stack.Screen name="Principal" options={{ title: 'Menu principal' }} component={Principal} />
+        <Stack.Screen name="Principal Ingeniero" options={{ title: 'Menu principal' }} component={PrincipalIngeniero} />
 
         <Stack.Screen name="Listado de Asignaciones" component={AsignacionesListado} />
         <Stack.Screen name="Crear Informe" component={InformeCrear} />
+        <Stack.Screen name="Registrar Técnico" component={RegistrarTecnico} />
         <Stack.Screen name="Solicitud Repuesto" component={SolicitudRepuesto} />
         <Stack.Screen name="Ver Informes" component={VerInformes} />
         <Stack.Screen name="Historial de Equipo" component={HistorialEquipo} />

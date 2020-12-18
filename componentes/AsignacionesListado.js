@@ -86,9 +86,7 @@ const AsignacionesListado = ({ navigation }) => {
     return (
       <View style={{ flex: 1, backgroundColor: '#eee' }}>
         <ScrollView>
-		<View style={styles.contentItems}>
-
-                
+		<View style={styles.contentItems}>         
       { assignments && assignments.map((item) => 
         <TouchableHighlight 
         key = {item.key}

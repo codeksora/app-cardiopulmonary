@@ -26,23 +26,13 @@ const Login = ({ navigation }) => {
     const [error, setError] = useState('');
     const [isValid, setValid] = useState(true);
 
-    // render(){
-      // const user = firebase.auth().currentUser;
-      
-  
-      // if(user) {
-      //   navigation.navigate('Principal', { name: 'Jane' })
-      // }
-
-    // }
-
     const __doSingIn = async () => {
       
         try {
             let response = await auth().signInWithEmailAndPassword(email, password)
             if (response && response.user) {
               const uid = response.user.uid;
-
+                console.log('Ingreso');
               firestore()
                 .collection('users')
                 .doc(uid)
@@ -61,16 +51,26 @@ const Login = ({ navigation }) => {
                 Alert.alert("Bienvenido ✅", "Logeado correctamente")
             }
         } catch (e) {
-            if(e.code == 'auth/user-not-found' || e-code == 'auth/wrong-password') {
-              ToastAndroid.showWithGravityAndOffset(
-                    "Usuario y/o contraseña incorrectos",
-                    ToastAndroid.SHORT,
-                    ToastAndroid.BOTTOM,
-                    25,
-                    50
-                  );
+          console.log('Error', e.code);
+          let message = '';
+
+            switch(e.code) {
+              case 'auth/user-not-found':
+              case 'auth/wrong-password':
+                message = 'Usuario y/o contraseña incorrectos';
+                break;
+              case 'auth/firebase-auth':
+                message = 'Error al conectar con Firebase';
+                break;
             }
-            console.log(e.message)
+
+            ToastAndroid.showWithGravityAndOffset(
+              message,
+              ToastAndroid.SHORT,
+              ToastAndroid.BOTTOM,
+              25,
+              50
+            );
         }
     }
 

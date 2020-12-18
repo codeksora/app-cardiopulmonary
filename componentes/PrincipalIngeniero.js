@@ -38,9 +38,11 @@ const PrincipalIngeniero = ({ navigation }) => {
 
             setName(userData.name)
 
-            storage().ref(userData.image).getDownloadURL().then((url) => {
-                setImage(url)
-              });
+            // storage().ref(userData.image).getDownloadURL().then((url) => {
+            //     setImage(url)
+			//   });
+			  
+			  setImage(userData.image_url)
 
         })
 	
@@ -60,7 +62,7 @@ const PrincipalIngeniero = ({ navigation }) => {
 			/>
         </View>
     
-    
+				
         <View style={styles.imageProfile}>
            <ImageBackground 
             source={{
@@ -131,7 +133,7 @@ const PrincipalIngeniero = ({ navigation }) => {
 			<TouchableHighlight 
 				style={styles.buttonItem}
 				underlayColor='#ddd'
-				onPress={() => __goItem('Historial del Equipo')}>
+				onPress={() => __goItem('Registrar Técnico')}>
 
 					<View style={styles.contentItem}>
 						<View style={styles.contentItemImage}>
